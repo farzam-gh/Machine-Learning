@@ -27,8 +27,7 @@ class SBS(object):
     def fit(self,x,y):           
         x_train,x_test,y_train,y_test=train_test_split(x,y,
            test_size=self.test_size,random_state=self.random_state)
-        dim=x.shape[1]
-        print(dim)
+        dim=x.shape[1]        
         self.indices_=tuple(range(dim))
         self.subsets_=[self.indices_]
         score=self.calc_score(x_train,x_test,y_train,
