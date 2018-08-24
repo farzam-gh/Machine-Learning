@@ -18,6 +18,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
+from sklearn.ensemble import RandomForestClassifier
 
 dataset=pd.read_csv('winequality-red.csv')
 x=dataset.iloc[:,0:11].values
@@ -49,5 +50,21 @@ y_pred2=knn2.predict(x_test[:,[4,6,10]])
 accuracy2=accuracy_score(y_test,y_pred2)
 
 # visualize
+plt.subplots(1,2)
+plt.subplot(121)
 plt.plot([len(x) for x in (fs.subsets_)], fs.scores_)
+plt.show()
+
+#RandomForest feature selection
+labels=dataset.columns[1:]
+forest=RandomForestClassifier(n_estimators=500,random_state=1)
+forest.fit(x_train,y_train)
+importance=forest.feature_importances_
+indices=np.argsort(importance)[::-1]
+for p in indices:
+    print('%s: %s'%(p,importance[p])) 
+plt.subplot(122)      
+plt.bar(range(x_train.shape[1]),importance[indices])
+plt.xticks(range(x_train.shape[1]),labels[indices],
+           rotation=90)
 plt.show()
