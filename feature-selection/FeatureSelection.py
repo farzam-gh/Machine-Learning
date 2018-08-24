@@ -19,6 +19,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.feature_selection import SelectFromModel
 
 dataset=pd.read_csv('winequality-red.csv')
 x=dataset.iloc[:,0:11].values
@@ -62,9 +63,17 @@ forest.fit(x_train,y_train)
 importance=forest.feature_importances_
 indices=np.argsort(importance)[::-1]
 for p in indices:
-    print('%s: %s'%(p,importance[p])) 
+    print('[%2d] %s: %f '%(p,labels[p],importance[p])) 
 plt.subplot(122)      
 plt.bar(range(x_train.shape[1]),importance[indices])
 plt.xticks(range(x_train.shape[1]),labels[indices],
            rotation=90)
 plt.show()
+
+#selectfrommodel feature selection
+sfm=SelectFromModel(forest,threshold=0.1,prefit=True)
+x_selected=sfm.transform(x_train_std)
+print('\nSelected features by SelectFromModel')
+for p in range(x_selected.shape[1]):
+    print('%2d) %s  %F'%(p+1,labels[indices[p]],
+         importance[indices[p]]))       
